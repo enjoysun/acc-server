@@ -14,3 +14,12 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.yunjia.lark.model
+
+# swagger2
+swagger2:
+  enable: true
+  basePackage: com.yunjia.lark.controller
+  title: lark-cloud
+  description: lark-cloud
+  termsOfServiceUrl: http://localhost:8001/
+  version: 1.0

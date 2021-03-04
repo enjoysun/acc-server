@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yunjia.lark.mapper.SysDepartmentMapper">
+
+    <resultMap type="com.yunjia.lark.model.entity.SysDepartment" id="SysDepartmentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="level" column="level" jdbcType="INTEGER"/>
+        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="seq" column="seq" jdbcType="VARCHAR"/>
+        <result property="orgId" column="org_id" jdbcType="INTEGER"/>
+        <result property="createdBy" column="created_by" jdbcType="VARCHAR"/>
+        <result property="updatedBy" column="updated_by" jdbcType="VARCHAR"/>
+        <result property="ctime" column="ctime" jdbcType="TIMESTAMP"/>
+        <result property="utime" column="utime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysDepartmentMap">
+        select
+          id, name, level, pid, description, seq, org_id, created_by, updated_by, ctime, utime
+        from lark_security.sys_department
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysDepartmentMap">
+        select
+          id, name, level, pid, description, seq, org_id, created_by, updated_by, ctime, utime
+        from lark_security.sys_department
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="SysDepartmentMap">
+        select
+          id, name, level, pid, description, seq, org_id, created_by, updated_by, ctime, utime
+        from lark_security.sys_department
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="level != null">
+                and level = #{level}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="seq != null and seq != ''">
+                and seq = #{seq}
+            </if>
+            <if test="orgId != null">
+                and org_id = #{orgId}
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                and created_by = #{createdBy}
+            </if>
+            <if test="updatedBy != null and updatedBy != ''">
+                and updated_by = #{updatedBy}
+            </if>
+            <if test="ctime != null">
+                and ctime = #{ctime}
+            </if>
+            <if test="utime != null">
+                and utime = #{utime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into lark_security.sys_department(name, level, pid, description, seq, org_id, created_by, updated_by, ctime, utime)
+        values (#{name}, #{level}, #{pid}, #{description}, #{seq}, #{orgId}, #{createdBy}, #{updatedBy}, #{ctime}, #{utime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update lark_security.sys_department
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="level != null">
+                level = #{level},
+            </if>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="seq != null and seq != ''">
+                seq = #{seq},
+            </if>
+            <if test="orgId != null">
+                org_id = #{orgId},
+            </if>
+            <if test="createdBy != null and createdBy != ''">
+                created_by = #{createdBy},
+            </if>
+            <if test="updatedBy != null and updatedBy != ''">
+                updated_by = #{updatedBy},
+            </if>
+            <if test="ctime != null">
+                ctime = #{ctime},
+            </if>
+            <if test="utime != null">
+                utime = #{utime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from lark_security.sys_department where id = #{id}
+    </delete>
+
+</mapper>
