@@ -58,7 +58,7 @@ create table oauth_approvals (
 
 
 -- customized oauth_client_details table
-create table ClientDetails (
+create table custom_client_details (
   appId VARCHAR(256) PRIMARY KEY,
   resourceIds VARCHAR(256),
   appSecret VARCHAR(256),

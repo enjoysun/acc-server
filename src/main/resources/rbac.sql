@@ -1,4 +1,4 @@
-CREATE TABLE `organization` (
+CREATE TABLE `sys_organization` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COMMENT '组织名称',
   `address` varchar(64) COMMENT '地址',
@@ -12,7 +12,7 @@ CREATE TABLE `organization` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='组织表';
 
-CREATE TABLE `department` (
+CREATE TABLE `sys_department` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COMMENT '部门名称',
   `level` int COMMENT '部门等级',
@@ -27,7 +27,7 @@ CREATE TABLE `department` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='部门表';
 
-CREATE TABLE `user` (
+CREATE TABLE `sys_user` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COMMENT '用户姓名',
   `sex` TINYINT COMMENT '用户性别',
@@ -49,7 +49,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
 
-CREATE TABLE `group` (
+CREATE TABLE `sys_group` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COMMENT '用户组别名',
   `description` varchar(256) comment '用户组备注',
@@ -61,7 +61,7 @@ CREATE TABLE `group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组';
 
-CREATE TABLE `user_group` (
+CREATE TABLE `sys_user_group` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` bigint unsigned comment '用户id',
   `gid` bigint unsigned comment '用户组id',
@@ -72,7 +72,7 @@ CREATE TABLE `user_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户——用户组中间表';
 
-CREATE TABLE `role` (
+CREATE TABLE `sys_role` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `code` varchar(16) COMMENT '角色编码',
   `name` varchar(32) COMMENT '角色名称',
@@ -88,7 +88,7 @@ CREATE TABLE `role` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
 
-CREATE TABLE `role_category` (
+CREATE TABLE `sys_role_category` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `rid` bigint unsigned COMMENT '角色id',
   `name` varchar(32) COMMENT '角色类别名称',
@@ -102,7 +102,7 @@ CREATE TABLE `role_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色类别表';
 
 
-CREATE TABLE `user_role` (
+CREATE TABLE `sys_user_role` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` bigint unsigned COMMENT 'user_id',
   `rid` bigint unsigned COMMENT 'role_id',
@@ -114,7 +114,7 @@ CREATE TABLE `user_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色表';
 
 
-CREATE TABLE `group_role` (
+CREATE TABLE `sys_group_role` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `gid` bigint unsigned COMMENT 'group_id',
   `rid` bigint unsigned COMMENT 'role_id',
@@ -126,7 +126,7 @@ CREATE TABLE `group_role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户组角色表';
 
 
-CREATE TABLE `explorer` (
+CREATE TABLE `sys_explorer` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COMMENT '资源名称',
   `status` int default 0 comment '状态 0:正常 1:暂无法使用(暂做扩展)',
@@ -138,7 +138,7 @@ CREATE TABLE `explorer` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源控制表';
 
-CREATE TABLE `menu` (
+CREATE TABLE `sys_menu` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `eid` bigint unsigned comment '资源id',
   `name` varchar(32) COMMENT '菜单名称',
@@ -154,7 +154,7 @@ CREATE TABLE `menu` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单表';
 
-CREATE TABLE `interface` (
+CREATE TABLE `sys_interface` (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
   `eid` bigint unsigned  comment '资源id',
   `name` varchar(32) COMMENT '接口名称',
