@@ -81,7 +81,7 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into lark_security.sys_menu(eid, name, icon, status, description, href, pid, created_by, updated_by, ctime, utime)
-        values (#{eid}, #{name}, #{icon}, #{status}, #{description}, #{href}, #{pid}, #{createdBy}, #{updatedBy}, #{ctime}, #{utime})
+        values (#{eid}, #{name}, #{icon}, #{status}, #{description}, #{href}, #{pid}, #{createdBy}, #{updatedBy}, now(), now())
     </insert>
 
     <!--通过主键修改数据-->
@@ -118,9 +118,7 @@
             <if test="ctime != null">
                 ctime = #{ctime},
             </if>
-            <if test="utime != null">
-                utime = #{utime},
-            </if>
+            utime = now(),
         </set>
         where id = #{id}
     </update>

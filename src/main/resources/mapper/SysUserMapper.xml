@@ -105,7 +105,7 @@
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into lark_security.sys_user(name, sex, age, phone, email, birthday, account, password, description, status, deleted, locked, dpt_id, created_by, updated_by, ctime, utime)
-        values (#{name}, #{sex}, #{age}, #{phone}, #{email}, #{birthday}, #{account}, #{password}, #{description}, #{status}, #{deleted}, #{locked}, #{dptId}, #{createdBy}, #{updatedBy}, #{ctime}, #{utime})
+        values (#{name}, #{sex}, #{age}, #{phone}, #{email}, #{birthday}, #{account}, #{password}, #{description}, #{status}, #{deleted}, #{locked}, #{dptId}, #{createdBy}, #{updatedBy}, now(), now())
     </insert>
 
     <!--通过主键修改数据-->
@@ -160,9 +160,7 @@
             <if test="ctime != null">
                 ctime = #{ctime},
             </if>
-            <if test="utime != null">
-                utime = #{utime},
-            </if>
+            utime = now(),
         </set>
         where id = #{id}
     </update>
