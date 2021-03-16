@@ -1,4 +1,4 @@
-package com.yunjia.lark.model.entity;
+package com.yunjia.lark.util;
 
 import lombok.Data;
 import org.springframework.security.crypto.encrypt.Encryptors;
