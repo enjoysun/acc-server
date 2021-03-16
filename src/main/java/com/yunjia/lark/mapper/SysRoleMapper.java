@@ -2,6 +2,7 @@ package com.yunjia.lark.mapper;
 
 import com.yunjia.lark.model.entity.SysRole;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public interface SysRoleMapper {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<SysRole> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -37,6 +38,22 @@ public interface SysRoleMapper {
      * @return 对象列表
      */
     List<SysRole> queryAll(SysRole sysRole);
+
+    /**
+     * 查询用户直连角色信息
+     *
+     * @return 对象列表
+     */
+    List<SysRole> queryRolesByUserId(Long id);
+
+    /**
+     * 根据用户组查询角色信息
+     *
+     * @return 对象列表
+     */
+    List<SysRole> queryRolesJoinUserGroupByUserId(Long id);
+
+    List<SysRole> queryAllRolesByUserId(Long id);
 
     /**
      * 新增数据

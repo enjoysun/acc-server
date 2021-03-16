@@ -37,6 +37,7 @@ CREATE TABLE `sys_user` (
   `birthday` varchar(16) comment '用户出生日期',
   `account` varchar(32) comment '用户账号',
   `password` varchar(128) comment '用户密码',
+  `salt` varchar(128) comment '密码盐值',
   `description` varchar(256) comment '用户备注',
   `status` int default 0 comment '账户登录状态 0:正常 1:登录失效(暂做扩展)',
   `deleted` int default 0 comment '删除状态 0:未删除 1:已删除',

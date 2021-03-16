@@ -40,6 +40,9 @@ public class SysUser implements Serializable {
     
      //用户密码
      private String password;
+
+     //盐值
+     private String salt;
     
      //用户备注
      private String description;

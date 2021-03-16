@@ -22,7 +22,7 @@
         select
           id, code, name, status, description, level, pid, seq, created_by, updated_by, ctime, utime
         from lark_security.sys_role
-        where id = #{id}
+        where id = #{id} and `status`=0
     </select>
 
     <!--查询指定行数据-->
@@ -30,7 +30,48 @@
         select
           id, code, name, status, description, level, pid, seq, created_by, updated_by, ctime, utime
         from lark_security.sys_role
+        where `status`=0
         limit #{offset}, #{limit}
+    </select>
+
+
+    <!--查询用户所有直属角色-->
+    <select id="queryRolesByUserId" resultMap="SysRoleMap">
+        select
+        r.id, r.code, r.name, r.status, r.description, r.level, r.pid, r.seq, r.created_by, r.updated_by, r.ctime, r.utime
+        from sys_role as r
+        left join sys_user_role as ur
+        on r.id=ur.rid
+        where ur.uid=#{id} and r.`status`=0
+    </select>
+
+    <!--查询用户所有用户组，并连带用户组所有权限-->
+    <select id="queryRolesJoinUserGroupByUserId" resultMap="SysRoleMap">
+        select
+        r.id, r.code, r.name, r.status, r.description, r.level, r.pid, r.seq, r.created_by, r.updated_by, r.ctime, r.utime
+        from sys_role as r, sys_group_role as gr, sys_user_group as ug
+        where
+        r.id=gr.rid and gr.gid=ug.gid and ug.uid=#{id} and r.`status`=0
+    </select>
+
+
+    <!--查询用户所有角色-->
+    <select id="queryAllRolesByUserId" resultMap="SysRoleMap">
+        select
+        DISTINCT
+        k.id, k.code, k.name, k.status, k.description, k.level, k.pid, k.seq, k.created_by, k.updated_by, k.ctime, k.utime
+        from (  select
+                r.id, r.code, r.name, r.status, r.description, r.level, r.pid, r.seq, r.created_by, r.updated_by, r.ctime, r.utime
+                from sys_role as r
+                left join sys_user_role as ur
+                on r.id=ur.rid
+                where ur.uid=#{id} and r.`status`=0
+        union all
+        select
+        r.id, r.code, r.name, r.status, r.description, r.level, r.pid, r.seq, r.created_by, r.updated_by, r.ctime, r.utime
+        from
+        sys_role as r, sys_group_role as gr, sys_user_group as ug
+        where r.id=gr.rid and gr.gid=ug.gid and ug.uid=#{id}) as k
     </select>
 
     <!--通过实体作为筛选条件查询-->
