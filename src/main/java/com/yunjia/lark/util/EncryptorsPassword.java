@@ -12,7 +12,7 @@ import org.springframework.security.crypto.keygen.KeyGenerators;
 @Data
 public class EncryptorsPassword {
     /**
-     * 该类是密码加密抽象类
+     * 该类是密码加密类
      * 密码={id}encryptors{salt:password}
      */
 
