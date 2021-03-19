@@ -1,5 +1,6 @@
 package com.yunjia.lark.model.entity;
 
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,7 +10,7 @@ import java.util.Collection;
  * @Author myou
  * @Date 2021/3/9  11:32 上午
  */
-public class SysUserDetail implements UserDetails {
+public class SysUserDetail implements UserDetails, CredentialsContainer {
     private String UserName;
     private String UserPassword;
     // 用户权限集合
@@ -17,14 +18,16 @@ public class SysUserDetail implements UserDetails {
     private int state;
     private int locked;
     private int deleted;
+    private String salt;
 
-    public SysUserDetail(String userName, String userPassword, Collection<? extends GrantedAuthority> authorities, int state, int locked, int deleted) {
+    public SysUserDetail(String userName, String userPassword, String salt, Collection<? extends GrantedAuthority> authorities, int state, int locked, int deleted) {
         UserName = userName;
         UserPassword = userPassword;
         Authorities = authorities;
         this.state = state;
         this.locked = locked;
         this.deleted = deleted;
+        this.salt = salt;
     }
 
     @Override
@@ -35,6 +38,10 @@ public class SysUserDetail implements UserDetails {
     @Override
     public String getPassword() {
         return this.UserPassword;
+    }
+
+    public String getSlat() {
+        return this.salt;
     }
 
     @Override
@@ -60,5 +67,11 @@ public class SysUserDetail implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.deleted == 0;
+    }
+
+    // 认证完成后擦除密码
+    @Override
+    public void eraseCredentials() {
+        this.UserPassword = "";
     }
 }

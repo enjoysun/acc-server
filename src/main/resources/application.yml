@@ -13,6 +13,11 @@ spring:
     user:
       name: admin
       password: admin
+  redis:
+    host: 192.168.108.171
+    port: 6379
+    password: 123456
+    database: 1
 
 # mybatis 配置
 mybatis:
@@ -30,3 +35,15 @@ swagger2:
 
 ACC:
   ReadmName: www.lark.com
+  digest-realm: www.lark.com
+  login-url: /login.html
+  secret-expire: 180000
+  ip-filter-expire: 300
+  algorithm: MD5
+  secret-max-apply: 10
+  forbidden: /forbidden.html
+  JWT:
+    header: Authorization
+    secret: $2a$10$tVwiKCrBDR68DcpaLqG4LOwGjYiG4cmB1.GhxeXvm0sdYazGDl6Xu
+    expiration: 604800
+    tokenHead: "Bearer "

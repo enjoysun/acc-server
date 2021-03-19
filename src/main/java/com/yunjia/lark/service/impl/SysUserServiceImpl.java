@@ -1,17 +1,11 @@
 package com.yunjia.lark.service.impl;
 
 import com.yunjia.lark.mapper.SysRoleMapper;
-import com.yunjia.lark.model.entity.SysRole;
 import com.yunjia.lark.model.entity.SysUser;
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
 import com.yunjia.lark.mapper.SysUserMapper;
 import com.yunjia.lark.service.SysUserService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.*;
 
@@ -28,7 +22,7 @@ import javax.annotation.Resource;
  * @since 2021-03-04 17:40:02
  */
 @Service("sysUserService")
-public class SysUserServiceImpl implements SysUserService, UserDetailsService {
+public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private SysUserMapper sysUserMapper;
@@ -45,6 +39,20 @@ public class SysUserServiceImpl implements SysUserService, UserDetailsService {
     @Override
     public SysUserRespVo queryById(Long id) {
         SysUser sysUser = this.sysUserMapper.queryById(id);
+
+        //将SysUser转成SysUserRespVo
+        SysUserRespVo sysUserRespVo = null;
+        if (sysUser != null) {
+            sysUserRespVo = new SysUserRespVo();
+            BeanUtils.copyProperties(sysUser, sysUserRespVo);
+        }
+
+        return sysUserRespVo;
+    }
+
+    @Override
+    public SysUserRespVo queryByUserNameOrAccount(String name) {
+        SysUser sysUser = this.sysUserMapper.queryByUserNameOrAccount(name);
 
         //将SysUser转成SysUserRespVo
         SysUserRespVo sysUserRespVo = null;
@@ -119,30 +127,5 @@ public class SysUserServiceImpl implements SysUserService, UserDetailsService {
     @Override
     public boolean deleteById(Long id) {
         return this.sysUserMapper.deleteById(id) > 0;
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        if (StringUtils.isEmpty(s))
-            throw new UsernameNotFoundException("用户名为空");
-        SysUser sysUser = sysUserMapper.queryByUserNameOrAccount(s);
-        if (null == sysUser)
-            throw new UsernameNotFoundException("不存在用户");
-        // 验证密码是否通过
-
-        // 查询用户所有角色
-        List<SysRole> sysRoles = sysRoleMapper.queryAllRolesByUserId(sysUser.getId());
-
-//        List<TbRole> tbRoles = roleService.RolesById(tbUser.getId());
-        // 构造角色列表而非权限路由路径
-        // 构造userDetail实例:user+permission
-//        HashSet<GrantedAuthority> hashSet = new HashSet<>();
-//        tbRoles.forEach(item -> {
-//            hashSet.add(
-////                    new SimpleGrantedAuthority(item.getEnname())
-//                    new CustomGrantedAuthority(item, permissionService.selectByRoleId(item.getId()))
-//            );
-//        });
-        return null;
     }
 }

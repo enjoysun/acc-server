@@ -1,6 +1,7 @@
 package com.yunjia.lark.service;
 
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
+import com.yunjia.lark.model.respvo.SysRoleRespVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
 import com.github.pagehelper.*;
 
@@ -19,6 +20,14 @@ public interface SysUserService {
      * @return 实例对象
      */
     SysUserRespVo queryById(Long id);
+
+    /**
+     * 通过ID查询单条数据
+     *
+     * @param name
+     * @return 用户名或者账号
+     */
+    SysUserRespVo queryByUserNameOrAccount(String name);
 
     /**
      * 查询多条数据

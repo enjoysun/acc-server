@@ -70,5 +70,8 @@ public class SysUserRespVo implements Serializable {
     
     @ApiModelProperty(value = "更新时间")
     private Date utime;
+
+
+    private String salt;
     
 }

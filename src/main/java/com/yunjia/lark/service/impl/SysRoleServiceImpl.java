@@ -7,8 +7,11 @@ import com.yunjia.lark.mapper.SysRoleMapper;
 import com.yunjia.lark.service.SysRoleService;
 import org.springframework.stereotype.Service;
 import com.github.pagehelper.*;
+
 import java.util.*;
+
 import org.springframework.beans.BeanUtils;
+
 import javax.annotation.Resource;
 
 /**
@@ -32,14 +35,14 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public SysRoleRespVo queryById(Long id) {
         SysRole sysRole = this.sysRoleMapper.queryById(id);
-        
+
         //将SysRole转成SysRoleRespVo
         SysRoleRespVo sysRoleRespVo = null;
-        if (sysRole != null){
+        if (sysRole != null) {
             sysRoleRespVo = new SysRoleRespVo();
             BeanUtils.copyProperties(sysRole, sysRoleRespVo);
         }
-        
+
         return sysRoleRespVo;
     }
 
@@ -47,22 +50,35 @@ public class SysRoleServiceImpl implements SysRoleService {
      * 查询多条数据
      *
      * @param sysRoleReqVo 实例对象
-     * @param pageNum 页数
-     * @param pageSize 每页条数
+     * @param pageNum      页数
+     * @param pageSize     每页条数
      * @return 对象列表
      */
     @Override
     public PageInfo<SysRoleRespVo> queryPageList(SysRoleReqVo sysRoleReqVo, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
-        
+
         //将SysRole转成SysRoleRespVo
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(sysRoleReqVo, sysRole);
         List<SysRole> sysRoleList = this.sysRoleMapper.queryAll(sysRole);
-        
+
         PageInfo<SysRoleRespVo> pageInfo = new PageInfo<>();
         BeanUtils.copyProperties(new PageInfo<>(sysRoleList), pageInfo);
         return pageInfo;
+    }
+
+    @Override
+    public List<SysRoleRespVo> queryAllRolesByUserId(Long id) {
+        List<SysRole> sysRoles = this.sysRoleMapper.queryAllRolesByUserId(id);
+        ArrayList<SysRoleRespVo> sysRoleRespVos = new ArrayList<>();
+        //将SysRole转成SysRoleRespVo
+        sysRoles.forEach(item -> {
+            SysRoleRespVo sysRoleRespVo = new SysRoleRespVo();
+            BeanUtils.copyProperties(item, sysRoleRespVo);
+            sysRoleRespVos.add(sysRoleRespVo);
+        });
+        return sysRoleRespVos;
     }
 
     /**
@@ -77,7 +93,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(sysRoleReqVo, sysRole);
         this.sysRoleMapper.insert(sysRole);
-        
+
         return this.queryById(sysRole.getId());
     }
 
@@ -93,7 +109,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         SysRole sysRole = new SysRole();
         BeanUtils.copyProperties(sysRoleReqVo, sysRole);
         this.sysRoleMapper.update(sysRole);
-        
+
         return this.queryById(sysRole.getId());
     }
 

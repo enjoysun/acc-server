@@ -58,23 +58,23 @@ public class SysUserReqVo implements Serializable {
     private String password;
 
     @ApiModelProperty(value = "用户备注")
-    @NotNull(groups = {ValidationGroups.Save.class})
+//    @NotNull(groups = {ValidationGroups.Save.class})
     private String description;
 
     @ApiModelProperty(value = "账户登录状态 0:正常 1:登录失效(暂做扩展)")
-    @NotNull(groups = {ValidationGroups.Save.class})
+//    @NotNull(groups = {ValidationGroups.Save.class})
     private Integer status;
 
     @ApiModelProperty(value = "删除状态 0:未删除 1:已删除")
-    @NotNull(groups = {ValidationGroups.Save.class})
+//    @NotNull(groups = {ValidationGroups.Save.class})
     private Integer deleted;
 
     @ApiModelProperty(value = "账户状态 0:正常 1:锁定")
-    @NotNull(groups = {ValidationGroups.Save.class})
+//    @NotNull(groups = {ValidationGroups.Save.class})
     private Integer locked;
 
     @ApiModelProperty(value = "所属部门")
-    @NotNull(groups = {ValidationGroups.Save.class})
+//    @NotNull(groups = {ValidationGroups.Save.class})
     private Long dptId;
 
     @ApiModelProperty(value = "创建人")

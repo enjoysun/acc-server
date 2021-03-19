@@ -4,6 +4,8 @@ import com.yunjia.lark.model.reqvo.SysRoleReqVo;
 import com.yunjia.lark.model.respvo.SysRoleRespVo;
 import com.github.pagehelper.*;
 
+import java.util.List;
+
 /**
  * 角色表(SysRole)表服务接口
  *
@@ -19,6 +21,9 @@ public interface SysRoleService {
      * @return 实例对象
      */
     SysRoleRespVo queryById(Long id);
+
+
+    List<SysRoleRespVo> queryAllRolesByUserId(Long id);
 
     /**
      * 查询多条数据

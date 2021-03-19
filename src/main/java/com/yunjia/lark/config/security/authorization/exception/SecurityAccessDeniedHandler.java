@@ -1,4 +1,4 @@
-package com.yunjia.lark.config.security;
+package com.yunjia.lark.config.security.authorization.exception;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -12,6 +12,8 @@ import java.io.IOException;
  * @Author myou
  * @Date 2021/3/8  6:09 下午
  * security 授权异常自定义处理
+ *
+ * 403验证
  */
 public class SecurityAccessDeniedHandler implements AccessDeniedHandler {
     @Override
