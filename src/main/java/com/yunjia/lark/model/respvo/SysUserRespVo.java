@@ -42,7 +42,7 @@ public class SysUserRespVo implements Serializable {
     private String account;
     
     @ApiModelProperty(value = "用户密码")
-    private String password;
+    private transient String password;
     
     @ApiModelProperty(value = "用户备注")
     private String description;
@@ -72,6 +72,6 @@ public class SysUserRespVo implements Serializable {
     private Date utime;
 
 
-    private String salt;
+    private transient String salt;
     
 }

@@ -12,13 +12,13 @@ import java.util.Collection;
  */
 public class SysUserDetail implements UserDetails, CredentialsContainer {
     private String UserName;
-    private String UserPassword;
+    private transient String UserPassword;
     // 用户权限集合
     private Collection<? extends GrantedAuthority> Authorities;
     private int state;
     private int locked;
     private int deleted;
-    private String salt;
+    private transient String salt;
 
     public SysUserDetail(String userName, String userPassword, String salt, Collection<? extends GrantedAuthority> authorities, int state, int locked, int deleted) {
         UserName = userName;

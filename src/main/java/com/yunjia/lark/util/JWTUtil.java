@@ -1,6 +1,7 @@
 package com.yunjia.lark.util;
 
 import com.yunjia.lark.model.entity.SysUserDetail;
+import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -60,9 +61,9 @@ public class JWTUtil {
      * @param userDetails 用户
      * @return 令牌
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(SysUserDetailRespVo userDetails) {
         Map<String, Object> claims = new HashMap<>(2);
-        claims.put("sub", userDetails.getUsername());
+        claims.put("sub", userDetails.getUserName());
         claims.put("created", new Date());
         return generateToken(claims);
     }

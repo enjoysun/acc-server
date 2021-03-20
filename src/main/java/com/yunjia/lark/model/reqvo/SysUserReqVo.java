@@ -85,6 +85,8 @@ public class SysUserReqVo implements Serializable {
     @NotNull(groups = {ValidationGroups.Save.class})
     private String updatedBy;
 
+    private String salt;
+
     @ApiModelProperty(value = "创建时间")
     private Date ctime;
 

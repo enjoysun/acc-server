@@ -22,9 +22,7 @@ public class EncryptorsKey {
     private static final String RSA = "RSA";
 
     public static String encryptors(String id, String salt, String password) {
-        TextEncryptor textEncryptor = Encryptors.text("password", salt);
-        String encrypt = textEncryptor.encrypt(password);
-        return String.format("{%s}%d", id, encrypt);
+        return String.format("{%s}%s", id, password);
     }
 
     public static String hashString(String string){
@@ -33,7 +31,8 @@ public class EncryptorsKey {
 
     // salt生产器
     public static String keyGenerators() {
-        return KeyGenerators.string().generateKey();
+        TextEncryptor textEncryptor = Encryptors.text("salt", KeyGenerators.string().generateKey());
+        return textEncryptor.encrypt(KeyGenerators.string().generateKey());
     }
 
     public static String rsaKey(String rsaCode) {
@@ -42,5 +41,10 @@ public class EncryptorsKey {
 
     public static String interceptRsaKey(String ip) {
         return String.format("%s-%s-%s", "acc", "intercept", ip);
+    }
+
+    public static void main(String[] args) {
+        String encryptors = EncryptorsKey.encryptors("MD5", "a30023678cfd5066", "password");
+        System.out.println(EncryptorsKey.hashString(encryptors));
     }
 }

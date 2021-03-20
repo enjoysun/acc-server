@@ -4,10 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yunjia.lark.config.SystemProperties;
 import com.yunjia.lark.model.reqvo.SysLoginUserVo;
+import com.yunjia.lark.model.reqvo.SysUserReqVo;
+import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
+import com.yunjia.lark.model.respvo.SysUserRespVo;
 import com.yunjia.lark.model.system.RestResult;
+import com.yunjia.lark.service.impl.SysUserServiceImpl;
 import com.yunjia.lark.util.EncryptorsKey;
+import com.yunjia.lark.util.JWTUtil;
+import com.yunjia.lark.util.PropertiesCopy;
 import com.yunjia.lark.util.RedisService;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -45,6 +54,12 @@ public class SysLoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private SysUserServiceImpl sysUserService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @GetMapping("/sign-nonce")
     public RestResult signSecret() throws UnsupportedEncodingException {
         HttpServletRequest req = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
@@ -66,13 +81,53 @@ public class SysLoginController {
     }
 
     @PostMapping("/register")
-    public RestResult register() {
-        return null;
+    public RestResult register(@RequestBody SysUserReqVo sysUserReqVo) throws InvalidKeySpecException, NoSuchAlgorithmException {
+        HttpServletRequest req = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        RestResult restResult = verifyTicket(req);
+        if (!restResult.getCode().equals("200")) {
+            return restResult;
+        }
+        Ticket ticket = (Ticket) restResult.getData();
+        SysUserRespVo checkStatus = sysUserService.queryByUserNameOrAccount(ticket.username);
+        if (null != checkStatus) {
+            return new RestResult("200", null, "已存在账户，请勿重复注册");
+        }
+        String privateKey = ticket.getSecrets().getOrDefault("privateKey", "");
+        String decrypt = RSAProvider.privateDecrypt(ticket.getResponse(), RSAProvider.getPrivateKey(privateKey));
+        String salt = EncryptorsKey.keyGenerators();
+        String password = EncryptorsKey.hashString(EncryptorsKey.encryptors("MD5", salt, decrypt));
+        sysUserReqVo.setPassword(password);
+        sysUserReqVo.setAccount(ticket.username);
+        sysUserReqVo.setSalt(salt);
+        sysUserReqVo.setStatus(0);
+        sysUserReqVo.setDeleted(0);
+        sysUserReqVo.setLocked(0);
+        sysUserService.save(sysUserReqVo);
+        SysUserDetailRespVo sysUserDetailRespVo = new SysUserDetailRespVo();
+        sysUserDetailRespVo.setUserName(ticket.username);
+        return new RestResult("200", jwtUtil.generateToken(sysUserDetailRespVo), "成功");
     }
 
     @PostMapping("/login")
     public RestResult login() throws InvalidKeySpecException, NoSuchAlgorithmException {
         HttpServletRequest req = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        RestResult restResult = verifyTicket(req);
+        if (!restResult.getCode().equals("200")) {
+            return restResult;
+        }
+        Ticket ticket = (Ticket) restResult.getData();
+        String privateKey = ticket.getSecrets().getOrDefault("privateKey", "");
+        String decrypt = RSAProvider.privateDecrypt(ticket.getResponse(), RSAProvider.getPrivateKey(privateKey));
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ticket.getUsername(), decrypt);
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        Object principal = authenticate.getPrincipal();
+        SysUserDetailRespVo sysUserDetailRespVo = new SysUserDetailRespVo();
+        PropertiesCopy.copy(principal, sysUserDetailRespVo);
+        return new RestResult("200", jwtUtil.generateToken(sysUserDetailRespVo), "成功");
+    }
+
+    private RestResult verifyTicket(HttpServletRequest req) {
         String nonce = req.getHeader("nonce");
         String username = req.getHeader("username");
         String response = req.getHeader("response");
@@ -91,12 +146,16 @@ public class SysLoginController {
         if (null == keyMap || keyMap.isEmpty()) {
             return new RestResult("400", null, "认证超时");
         }
-        String privateKey = keyMap.getOrDefault("privateKey", "");
-        String decrypt = RSAProvider.privateDecrypt(response, RSAProvider.getPrivateKey(privateKey));
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, decrypt);
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authenticate);
-        Object principal = authenticate.getPrincipal();
-        return null;
+        return new RestResult("200", Ticket.builder().nonce(nonce).username(username).response(response).secrets(keyMap).build(), "成功");
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    private static class Ticket {
+        private String nonce;
+        private String username;
+        private String response;
+        private Map<String, String> secrets;
     }
 }

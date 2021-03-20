@@ -34,8 +34,6 @@ public class SysUserDetailServiceImpl implements UserDetailsService {
         SysUserRespVo userRespVo = sysUserService.queryByUserNameOrAccount(s);
         if (null == userRespVo)
             throw new UsernameNotFoundException("不存在用户");
-        // 验证密码是否通过
-
         // 查询用户所有角色
         List<SysRoleRespVo> sysRoleRespVos = sysRoleService.queryAllRolesByUserId(userRespVo.getId());
 
