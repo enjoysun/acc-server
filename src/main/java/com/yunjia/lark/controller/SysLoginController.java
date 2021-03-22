@@ -18,6 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -45,6 +47,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/user")
 public class SysLoginController {
 
+    private final Logger logger = LoggerFactory.getLogger(SysLoginController.class);
+
     @Autowired
     private StringRedisTemplate redisTemplate;
 
@@ -65,12 +69,14 @@ public class SysLoginController {
         HttpServletRequest req = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String remoteHost = req.getRemoteHost();
-        remoteHost = StringUtils.isEmpty(remoteHost) ? "127.0.0.1" : remoteHost;
+        if (StringUtils.isEmpty(remoteHost)) {
+            return new RestResult("400", null, "验证信息不完整，无法颁发授权");
+        }
         Long increment = RedisService.executeScript(redisTemplate, "script/lua/incr-expire.lua", Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
         if (null != increment && increment <= properties.getIpMaxApply()) {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);
-            System.out.println(EncryptorsKey.rsaKey(rsaKey));
+            logger.info(String.format("secrets key:%s", EncryptorsKey.rsaKey(rsaKey)));
             valueOperations.set(EncryptorsKey.rsaKey(rsaKey), new Gson().toJson(secrets), properties.getSecretExpire(), TimeUnit.MILLISECONDS);
             Map<String, String> map = new HashMap<>();
             map.put("nonce", rsaKey);
@@ -99,9 +105,6 @@ public class SysLoginController {
         sysUserReqVo.setPassword(password);
         sysUserReqVo.setAccount(ticket.username);
         sysUserReqVo.setSalt(salt);
-        sysUserReqVo.setStatus(0);
-        sysUserReqVo.setDeleted(0);
-        sysUserReqVo.setLocked(0);
         sysUserService.save(sysUserReqVo);
         SysUserDetailRespVo sysUserDetailRespVo = new SysUserDetailRespVo();
         sysUserDetailRespVo.setUserName(ticket.username);
