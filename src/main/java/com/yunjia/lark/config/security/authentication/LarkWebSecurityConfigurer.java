@@ -42,23 +42,24 @@ public class LarkWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider(){
+    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider() {
         return new UserAndCodeAuthenticationProvider();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService)
-                .and() //自定义认证provider添加
-                .authenticationProvider(userAuthenticationProvider());
+        auth.authenticationProvider(userAuthenticationProvider());
+//        auth.userDetailsService(userDetailService)
+//                .and() //自定义认证provider添加
+//                .authenticationProvider(userAuthenticationProvider());
 //                .authenticationProvider(userAndCodeAuthenticationProvider());
-        /*关于配置AuthenticationProvider认证链路问题(暂不可行):
-        * 存在一个默认的DaoAuthenticationProvider认证provider，这个provider是在该方法中配置userDetailService时，自动加入providerManager管理的provider列表中
-        * providerManager中认证逻辑是多个provider进行链路认证，只要有一个provider返回Authentication则代表认证成功，若所有的provider返回null则，认证失败
-        * 本系统想主动构造provider进行认证逻辑自定义，所以无需要默认的provider，而providerManager的list<Providers>属性属于外部不可访问，无法进行remove所以取消AuthenticationManagerBuilder中配置provider
-        * 转为在HttpSecurity中配置provider
-        * 详情见:https://github.com/spring-projects/spring-security/issues/4149
-        * */
+        /*关于配置AuthenticationProvider认证链路问题:
+         * 存在一个默认的DaoAuthenticationProvider认证provider，这个provider是在该方法中配置userDetailService时，自动加入providerManager管理的provider列表中
+         * providerManager中认证逻辑是多个provider进行链路认证，只要有一个provider返回Authentication则代表认证成功，若所有的provider返回null则，认证失败
+         * 本系统想主动构造provider进行认证逻辑自定义，所以无需要默认的provider，而providerManager的list<Providers>属性属于外部不可访问，无法进行remove所以取消AuthenticationManagerBuilder中配置provider
+         * 转为在HttpSecurity中配置provider
+         * 详情见:https://github.com/spring-projects/spring-security/issues/4149
+         * */
     }
 
     @Bean

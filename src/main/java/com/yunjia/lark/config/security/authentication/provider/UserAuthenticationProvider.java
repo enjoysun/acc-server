@@ -47,8 +47,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         if (!StringUtils.equals(hashString, userDetails.getPassword())) {
             publisher.publishEvent(new LoginFailEvent(authentication));
             // 认证采用providers链持续认证，所以此处不能返回null否则会走默认的DaoAuthenticationProvider
-            throw new BadCredentialsException("密码验证失败");
-//            return null;
+//            throw new BadCredentialsException("密码验证失败");
+            return null;
         }
         return new UsernamePasswordAuthenticationToken(userDetails, passWord, userDetails.getAuthorities());
     }
