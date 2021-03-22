@@ -36,19 +36,15 @@ public class LarkWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     private AnonymousAuthenticationEntryPointHandler anonymousAuthenticationEntryPointHandler;
 
-    @Bean
-    public UserAuthenticationProvider userAuthenticationProvider() {
-        return new UserAuthenticationProvider();
-    }
+    @Autowired
+    public UserAuthenticationProvider userAuthenticationProvider;
 
-    @Bean
-    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider() {
-        return new UserAndCodeAuthenticationProvider();
-    }
+    @Autowired
+    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(userAuthenticationProvider());
+        auth.authenticationProvider(userAuthenticationProvider);
 //        auth.userDetailsService(userDetailService)
 //                .and() //自定义认证provider添加
 //                .authenticationProvider(userAuthenticationProvider());

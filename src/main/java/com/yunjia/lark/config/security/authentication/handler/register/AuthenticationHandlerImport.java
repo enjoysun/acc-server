@@ -1,9 +1,8 @@
 package com.yunjia.lark.config.security.authentication.handler.register;
 
-import com.yunjia.lark.config.SecurityProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ImportSelector;
-import org.springframework.core.type.AnnotationMetadata;
+import com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider;
+import com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider;
+import org.springframework.context.annotation.Bean;
 
 import java.util.Set;
 
@@ -13,13 +12,14 @@ import java.util.Set;
  * 加载自定义认证链路handler
  */
 
-public class AuthenticationHandlerImport implements ImportSelector {
+public class AuthenticationHandlerImport {
+    @Bean
+    public UserAuthenticationProvider userAuthenticationProvider() {
+        return new UserAuthenticationProvider();
+    }
 
-    @Autowired
-    private SecurityProperties securityProperties;
-
-    @Override
-    public String[] selectImports(AnnotationMetadata annotationMetadata) {
-        return new String[0];
+    @Bean
+    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider() {
+        return new UserAndCodeAuthenticationProvider();
     }
 }

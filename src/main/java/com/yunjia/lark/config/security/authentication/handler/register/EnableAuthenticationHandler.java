@@ -13,6 +13,6 @@ import java.lang.annotation.*;
 @Documented
 @EnableConfigurationProperties({SecurityProperties.class})
 @AutoConfigureAfter(SecurityProperties.class)
-//@Import(AuthenticationHandlerImport.class)
+@Import(AuthenticationHandlerImport.class)
 public @interface EnableAuthenticationHandler {
 }
