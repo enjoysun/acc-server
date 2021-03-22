@@ -2,8 +2,7 @@ package com.yunjia.lark.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.yunjia.lark.config.SystemProperties;
-import com.yunjia.lark.model.reqvo.SysLoginUserVo;
+import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
 import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
@@ -53,7 +52,7 @@ public class SysLoginController {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private SystemProperties properties;
+    private SecurityProperties properties;
 
     @Autowired
     private AuthenticationManager authenticationManager;

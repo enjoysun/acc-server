@@ -1,5 +1,6 @@
 package com.yunjia.lark.config.security.authentication.provider;
 
+import com.yunjia.lark.annotation.ProviderProcess;
 import com.yunjia.lark.config.event.LoginFailEvent;
 import com.yunjia.lark.config.security.authentication.handler.LoginFailureHandler;
 import com.yunjia.lark.model.entity.SysUserDetail;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
  * <p>
  * 自定义provider进行特殊定制密码格式验证
  */
+@ProviderProcess
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired

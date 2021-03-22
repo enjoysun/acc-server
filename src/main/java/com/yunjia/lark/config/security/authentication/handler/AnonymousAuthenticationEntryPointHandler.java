@@ -1,13 +1,12 @@
 package com.yunjia.lark.config.security.authentication.handler;
 
 import com.google.gson.Gson;
-import com.yunjia.lark.config.SystemProperties;
+import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.util.EncryptorsKey;
 import com.yunjia.lark.util.RedisService;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +17,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +35,7 @@ public class AnonymousAuthenticationEntryPointHandler implements AuthenticationE
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private SystemProperties properties;
+    private SecurityProperties properties;
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
