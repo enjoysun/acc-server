@@ -1,9 +1,11 @@
 package com.yunjia.lark.model.reqvo;
 
 import java.util.Date;
+
 import com.yunjia.lark.model.system.ValidationGroups;
 import lombok.Data;
 import io.swagger.annotations.*;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -63,15 +65,15 @@ public class SysUserReqVo implements Serializable {
 
     @ApiModelProperty(value = "账户登录状态 0:正常 1:登录失效(暂做扩展)")
 //    @NotNull(groups = {ValidationGroups.Save.class})
-    private Integer status;
+    private Integer status = 0;
 
     @ApiModelProperty(value = "删除状态 0:未删除 1:已删除")
 //    @NotNull(groups = {ValidationGroups.Save.class})
-    private Integer deleted;
+    private Integer deleted = 0;
 
     @ApiModelProperty(value = "账户状态 0:正常 1:锁定")
 //    @NotNull(groups = {ValidationGroups.Save.class})
-    private Integer locked;
+    private Integer locked = 0;
 
     @ApiModelProperty(value = "所属部门")
 //    @NotNull(groups = {ValidationGroups.Save.class})

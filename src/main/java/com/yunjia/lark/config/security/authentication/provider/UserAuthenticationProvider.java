@@ -1,5 +1,6 @@
 package com.yunjia.lark.config.security.authentication.provider;
 
+import com.yunjia.lark.annotation.ProviderProcess;
 import com.yunjia.lark.config.event.LoginFailEvent;
 import com.yunjia.lark.config.security.authentication.handler.LoginFailureHandler;
 import com.yunjia.lark.model.entity.SysUserDetail;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
  * <p>
  * 自定义provider进行特殊定制密码格式验证
  */
+@ProviderProcess
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
@@ -47,8 +49,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         if (!StringUtils.equals(hashString, userDetails.getPassword())) {
             publisher.publishEvent(new LoginFailEvent(authentication));
             // 认证采用providers链持续认证，所以此处不能返回null否则会走默认的DaoAuthenticationProvider
-            throw new BadCredentialsException("密码验证失败");
-//            return null;
+//            throw new BadCredentialsException("密码验证失败");
+            return null;
         }
         return new UsernamePasswordAuthenticationToken(userDetails, passWord, userDetails.getAuthorities());
     }

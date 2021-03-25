@@ -1,13 +1,13 @@
 package com.yunjia.lark.config.security.authentication.handler;
 
 import com.google.gson.Gson;
-import com.yunjia.lark.config.SystemProperties;
+import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.util.EncryptorsKey;
+import com.yunjia.lark.util.RedisAtomicPath;
 import com.yunjia.lark.util.RedisService;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.core.AuthenticationException;
@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -37,21 +36,24 @@ public class AnonymousAuthenticationEntryPointHandler implements AuthenticationE
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private SystemProperties properties;
+    private SecurityProperties properties;
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
         // 根据访问ip进行密钥获取限制
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String remoteHost = httpServletRequest.getRemoteHost();
-        remoteHost = StringUtils.isEmpty(remoteHost) ? "127.0.0.1" : remoteHost;
-        Long increment = RedisService.executeScript(redisTemplate, "script/lua/incr-expire.lua", Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
         // 允许跨域
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         // 允许自定义请求头token(允许head跨域)
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
         httpServletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
         httpServletResponse.setHeader("WWW-Authenticate", String.format("Digest realm=%s", properties.getRealm()));
+        if (StringUtils.isEmpty(remoteHost)) {
+            httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            httpServletResponse.getWriter().print("验证信息不完整，无法颁发授权");
+        }
+        Long increment = RedisService.executeScript(redisTemplate, RedisAtomicPath.INCR_EXPIRE, Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
         if (null != increment && increment <= properties.getIpMaxApply()) {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);

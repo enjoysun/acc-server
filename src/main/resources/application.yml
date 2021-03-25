@@ -35,13 +35,15 @@ swagger2:
 
 ACC:
   ReadmName: www.lark.com
-  digest-realm: www.lark.com
-  login-url: /login.html
-  secret-expire: 180000
-  ip-filter-expire: 300
+  realm: www.lark.com
+  loginUri: /login.html
+  secretExpire: 180000
+  ipFilterExpire: 300
   algorithm: MD5
-  secret-max-apply: 10
+  ipMaxApply: 10
   forbidden: /forbidden.html
+  authenticationHandler: [com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider, com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider]
+  authorizationVoter: ["",""]
   JWT:
     header: Authorization
     secret: $2a$10$tVwiKCrBDR68DcpaLqG4LOwGjYiG4cmB1.GhxeXvm0sdYazGDl6Xu

@@ -22,10 +22,10 @@ public class EncryptorsKey {
     private static final String RSA = "RSA";
 
     public static String encryptors(String id, String salt, String password) {
-        return String.format("{%s}%s", id, password);
+        return String.format("{%s}%s:%s", id, salt, password);
     }
 
-    public static String hashString(String string){
+    public static String hashString(String string) {
         return DigestUtils.md5Hex(string);
     }
 
