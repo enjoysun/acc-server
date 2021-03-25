@@ -15,8 +15,8 @@ public final class ResponseCode {
     //参数校验异常
     public static final String PARAMETER_EXCEPTION = "501";
 
-    //权限不够
-    public static final String AUTHORIZATION_FAILURE = "403";
+    //认证失败
+    public static final String AUTHORIZATION_FAILURE = "401";
 
     //系统异常
     public static final String SYSTEM_EXCEPTION = "-1";
