@@ -3,6 +3,7 @@ package com.yunjia.lark.config.security.authentication.handler;
 import com.google.gson.Gson;
 import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.util.EncryptorsKey;
+import com.yunjia.lark.util.RedisAtomicPath;
 import com.yunjia.lark.util.RedisService;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -48,11 +49,11 @@ public class AnonymousAuthenticationEntryPointHandler implements AuthenticationE
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
         httpServletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
         httpServletResponse.setHeader("WWW-Authenticate", String.format("Digest realm=%s", properties.getRealm()));
-        if (StringUtils.isEmpty(remoteHost)){
+        if (StringUtils.isEmpty(remoteHost)) {
             httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             httpServletResponse.getWriter().print("验证信息不完整，无法颁发授权");
         }
-        Long increment = RedisService.executeScript(redisTemplate, "script/lua/incr-expire.lua", Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
+        Long increment = RedisService.executeScript(redisTemplate, RedisAtomicPath.INCR_EXPIRE, Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
         if (null != increment && increment <= properties.getIpMaxApply()) {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);

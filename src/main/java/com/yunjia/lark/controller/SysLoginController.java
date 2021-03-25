@@ -8,10 +8,7 @@ import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
 import com.yunjia.lark.model.system.RestResult;
 import com.yunjia.lark.service.impl.SysUserServiceImpl;
-import com.yunjia.lark.util.EncryptorsKey;
-import com.yunjia.lark.util.JWTUtil;
-import com.yunjia.lark.util.PropertiesCopy;
-import com.yunjia.lark.util.RedisService;
+import com.yunjia.lark.util.*;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,7 +68,7 @@ public class SysLoginController {
         if (StringUtils.isEmpty(remoteHost)) {
             return new RestResult("400", null, "验证信息不完整，无法颁发授权");
         }
-        Long increment = RedisService.executeScript(redisTemplate, "script/lua/incr-expire.lua", Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
+        Long increment = RedisService.executeScript(redisTemplate, RedisAtomicPath.INCR_EXPIRE, Collections.singletonList(EncryptorsKey.interceptRsaKey(remoteHost)), Long.class, String.valueOf(properties.getIpFilterExpire()));
         if (null != increment && increment <= properties.getIpMaxApply()) {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);
