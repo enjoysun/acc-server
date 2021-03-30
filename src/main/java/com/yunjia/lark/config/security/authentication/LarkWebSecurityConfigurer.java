@@ -1,26 +1,24 @@
 package com.yunjia.lark.config.security.authentication;
 
 import com.yunjia.lark.config.security.authentication.handler.AnonymousAuthenticationEntryPointHandler;
-import com.yunjia.lark.config.security.authentication.handler.LoginFailureHandler;
-import com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider;
-import com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider;
 import com.yunjia.lark.service.impl.SysUserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 /**
  * @Author myou
@@ -37,14 +35,23 @@ public class LarkWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private AnonymousAuthenticationEntryPointHandler anonymousAuthenticationEntryPointHandler;
 
     @Autowired
-    public UserAuthenticationProvider userAuthenticationProvider;
+    public List<AuthenticationProvider> providers;
 
     @Autowired
-    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider;
+    public DaoAuthenticationProvider daoAuthenticationProvider;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(userAuthenticationProvider);
+    protected void configure(AuthenticationManagerBuilder auth) {
+        if (null == providers || providers.isEmpty() || providers.size() == 1) {
+            auth.authenticationProvider(daoAuthenticationProvider);
+            return;
+        }
+        providers.forEach(item -> {
+            if (item.getClass().isAssignableFrom(DaoAuthenticationProvider.class)) {
+                return;
+            }
+            auth.authenticationProvider(item);
+        });
 //        auth.userDetailsService(userDetailService)
 //                .and() //自定义认证provider添加
 //                .authenticationProvider(userAuthenticationProvider());
