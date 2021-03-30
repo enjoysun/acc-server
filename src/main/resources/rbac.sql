@@ -130,6 +130,7 @@ CREATE TABLE `sys_group_role` (
 CREATE TABLE `sys_explorer` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(32) COMMENT '资源名称',
+  `explorer_type` varchar(32) COMMENT '资源分组',
   `status` int default 0 comment '状态 0:正常 1:暂无法使用(暂做扩展)',
   `description` varchar(256) comment '资源备注',
   `created_by` varchar(16)  comment '创建人',
@@ -138,6 +139,17 @@ CREATE TABLE `sys_explorer` (
   `utime` datetime default current_timestamp on update current_timestamp comment '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资源控制表';
+
+CREATE TABLE `sys_role_explorer` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `rid` bigint COMMENT '角色id',
+  `eid` bigint COMMENT '资源id',
+  `created_by` varchar(16)  comment '创建人',
+  `updated_by` varchar(16)  comment '修改人',
+  `ctime` datetime default current_timestamp comment '创建时间',
+  `utime` datetime default current_timestamp on update current_timestamp comment '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色资源表';
 
 CREATE TABLE `sys_menu` (
   `id` bigint NOT NULL AUTO_INCREMENT,
