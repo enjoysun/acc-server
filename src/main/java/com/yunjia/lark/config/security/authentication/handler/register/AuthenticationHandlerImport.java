@@ -1,10 +1,10 @@
 package com.yunjia.lark.config.security.authentication.handler.register;
 
-import com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider;
-import com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider;
-import org.springframework.context.annotation.Bean;
-
-import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.context.annotation.DeferredImportSelector;
+import org.springframework.core.env.Environment;
+import org.springframework.core.type.AnnotationMetadata;
 
 /**
  * @Author myou
@@ -12,14 +12,21 @@ import java.util.Set;
  * 加载自定义认证链路handler
  */
 
-public class AuthenticationHandlerImport {
-    @Bean
-    public UserAuthenticationProvider userAuthenticationProvider() {
-        return new UserAuthenticationProvider();
+public class AuthenticationHandlerImport implements DeferredImportSelector, EnvironmentAware {
+    private Environment environment;
+
+
+    @Override
+    public String[] selectImports(AnnotationMetadata annotationMetadata) {
+        String authenticationHandlers = this.environment.getProperty("ACC.authenticationHandler");
+        if (!StringUtils.isEmpty(authenticationHandlers)) {
+            return authenticationHandlers.split(",");
+        }
+        return new String[0];
     }
 
-    @Bean
-    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider() {
-        return new UserAndCodeAuthenticationProvider();
+    @Override
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
     }
 }
