@@ -1,10 +1,11 @@
 package com.yunjia.lark.config.security.authentication.handler.register;
 
-import com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider;
-import com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider;
+import com.yunjia.lark.config.security.authentication.provider.DefaultAuthenticationProvider;
+import com.yunjia.lark.service.impl.SysUserDetailServiceImpl;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-
-import java.util.Set;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 /**
  * @Author myou
@@ -13,13 +14,14 @@ import java.util.Set;
  */
 
 public class AuthenticationHandlerImport {
+    /*
+     * 暂定初始化事项
+     * */
     @Bean
-    public UserAuthenticationProvider userAuthenticationProvider() {
-        return new UserAuthenticationProvider();
-    }
-
-    @Bean
-    public UserAndCodeAuthenticationProvider userAndCodeAuthenticationProvider() {
-        return new UserAndCodeAuthenticationProvider();
+    @ConditionalOnMissingBean(DefaultAuthenticationProvider.class)
+    public AuthenticationProvider defaultAuthenticationProvider(SysUserDetailServiceImpl userDetailService) {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailService);
+        return daoAuthenticationProvider;
     }
 }
