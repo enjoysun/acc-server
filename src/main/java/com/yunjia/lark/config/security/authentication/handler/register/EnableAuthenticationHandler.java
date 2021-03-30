@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Documented
 @EnableConfigurationProperties({SecurityProperties.class})
-@Import({DefaultAuthenticationProvider.class, AuthenticationHandlerImport.class})
+@Import({AuthenticationHandlerImport.class, DefaultAuthenticationProvider.class})
 public @interface EnableAuthenticationHandler {
 }
