@@ -1,11 +1,15 @@
-package com.yunjia.lark.config.security.authentication;
+package com.yunjia.lark.config;
 
 import com.yunjia.lark.config.security.authentication.handler.AnonymousAuthenticationEntryPointHandler;
+import com.yunjia.lark.config.security.authorization.voter.AuthenticatedVoter;
 import com.yunjia.lark.service.impl.SysUserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -18,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -69,6 +74,17 @@ public class LarkWebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
+    }
+
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        /*暂测试voter*/
+        List<AccessDecisionVoter<? extends Object>> decisionVoters
+                = Arrays.asList(
+                new AuthenticatedVoter((authentication, object, collection) -> {
+                    return 1;
+                }));
+        return new UnanimousBased(decisionVoters);
     }
 
     /**
