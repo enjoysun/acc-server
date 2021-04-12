@@ -3,6 +3,7 @@ package com.yunjia.lark.config.security.authentication.handler;
 import com.google.gson.Gson;
 import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.util.EncryptorsKey;
+import com.yunjia.lark.util.GsonService;
 import com.yunjia.lark.util.RedisAtomicPath;
 import com.yunjia.lark.util.RedisService;
 import com.yunjia.lark.util.rsa.impl.RSAProvider;
@@ -57,7 +58,7 @@ public class AnonymousAuthenticationEntryPointHandler implements AuthenticationE
         if (null != increment && increment <= properties.getIpMaxApply()) {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);
-            valueOperations.set(EncryptorsKey.rsaKey(rsaKey), new Gson().toJson(secrets), properties.getSecretExpire(), TimeUnit.MILLISECONDS);
+            valueOperations.set(EncryptorsKey.rsaKey(rsaKey), GsonService.getInstance().toJson(secrets), properties.getSecretExpire(), TimeUnit.MILLISECONDS);
             httpServletResponse.setHeader("public-key", secrets.get("publicKey"));
             httpServletResponse.setHeader("nonce", rsaKey);
             httpServletResponse.setHeader("qop", "auth");

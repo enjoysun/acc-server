@@ -16,6 +16,6 @@ public class ResponseRender {
         // 允许自定义请求头token(允许head跨域)
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "token, Accept, Origin, X-Requested-With, Content-Type, Last-Modified");
         httpServletResponse.setHeader("Content-type", "application/json;charset=UTF-8");
-        httpServletResponse.getWriter().print(new Gson().toJson(print));
+        httpServletResponse.getWriter().print(GsonService.getInstance().toJson(print));
     }
 }

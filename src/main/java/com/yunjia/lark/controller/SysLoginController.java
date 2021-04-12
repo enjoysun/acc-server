@@ -1,6 +1,5 @@
 package com.yunjia.lark.controller;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
@@ -73,7 +72,7 @@ public class SysLoginController {
             String rsaKey = EncryptorsKey.keyGenerators(); // 用于发布公钥的缓存key
             Map<String, String> secrets = RSAProvider.createKeys(1024);
             logger.info(String.format("secrets key:%s", EncryptorsKey.rsaKey(rsaKey)));
-            valueOperations.set(EncryptorsKey.rsaKey(rsaKey), new Gson().toJson(secrets), properties.getSecretExpire(), TimeUnit.MILLISECONDS);
+            valueOperations.set(EncryptorsKey.rsaKey(rsaKey), GsonService.getInstance().toJson(secrets), properties.getSecretExpire(), TimeUnit.MILLISECONDS);
             Map<String, String> map = new HashMap<>();
             map.put("nonce", rsaKey);
             map.put("public-key", secrets.get("publicKey"));
@@ -141,7 +140,7 @@ public class SysLoginController {
         String secret = operations.get(EncryptorsKey.rsaKey(nonce));
         Type type = new TypeToken<HashMap<String, String>>() {
         }.getType();
-        HashMap<String, String> keyMap = new Gson().fromJson(secret, type);
+        HashMap<String, String> keyMap = GsonService.getInstance().fromJson(secret, type);
         if (null == keyMap || keyMap.isEmpty()) {
             return new RestResult("400", null, "认证超时");
         }
