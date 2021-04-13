@@ -3,13 +3,13 @@ package com.yunjia.lark.config.security.authentication.code;
 import com.yunjia.lark.util.EncryptorsKey;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.Authentication;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 
 public interface CodeVerifyService {
+
     default boolean verifyCode(HttpServletRequest request, StringRedisTemplate redisTemplate) {
         String key = request.getHeader("username");
         String clientCode = request.getHeader("code");
@@ -23,8 +23,8 @@ public interface CodeVerifyService {
         return false;
     }
 
-    default boolean setVerifyCodeExpire(Authentication authentication, String code, StringRedisTemplate redisTemplate) {
-        redisTemplate.opsForValue().set(EncryptorsKey.hashString(authentication.getName()), code, 60000, TimeUnit.MILLISECONDS);
+    default boolean setVerifyCodeExpire(String userName, String code, StringRedisTemplate redisTemplate) {
+        redisTemplate.opsForValue().set(EncryptorsKey.hashString(userName), code, 60000, TimeUnit.MILLISECONDS);
         return true;
     }
 }

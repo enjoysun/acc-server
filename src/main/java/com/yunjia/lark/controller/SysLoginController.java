@@ -2,6 +2,7 @@ package com.yunjia.lark.controller;
 
 import com.google.gson.reflect.TypeToken;
 import com.yunjia.lark.config.SecurityProperties;
+import com.yunjia.lark.config.security.authentication.code.CodeVerifyService;
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
 import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
@@ -145,6 +146,27 @@ public class SysLoginController {
             return new RestResult("400", null, "认证超时");
         }
         return new RestResult("200", Ticket.builder().nonce(nonce).username(username).response(response).secrets(keyMap).build(), "成功");
+    }
+
+    @GetMapping("/verifyCodeApply/{userName}")
+    public RestResult verifyCodeApply(@PathVariable("userName") String userName) {
+        String code = EncryptorsKey.codeCreate(4);
+        DefaultVerifyService defaultVerifyService = new DefaultVerifyService();
+        defaultVerifyService.setVerifyCodeExpire(userName, code, redisTemplate);
+        return new RestResult("200", code, "成功");
+    }
+
+    public class DefaultVerifyService implements CodeVerifyService {
+
+        @Override
+        public boolean verifyCode(HttpServletRequest request, StringRedisTemplate redisTemplate) {
+            return CodeVerifyService.super.verifyCode(request, redisTemplate);
+        }
+
+        @Override
+        public boolean setVerifyCodeExpire(String userName, String code, StringRedisTemplate redisTemplate) {
+            return CodeVerifyService.super.setVerifyCodeExpire(userName, code, redisTemplate);
+        }
     }
 
     @Data

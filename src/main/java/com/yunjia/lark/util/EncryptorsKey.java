@@ -8,6 +8,7 @@ import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,7 +44,17 @@ public class EncryptorsKey {
         return String.format("%s-%s-%s", "acc", "intercept", ip);
     }
 
+    /*随机种子生成(该方案只能散列最多8位)*/
+    public static String codeCreate(int length) {
+        if (length <= 0)
+            return "";
+        long span = System.currentTimeMillis();
+        String value = String.valueOf(span);
+        return value.substring(value.length() - length);
+    }
+
     public static void main(String[] args) {
+        System.out.println(codeCreate(4));
         String encryptors = EncryptorsKey.encryptors("MD5", "a30023678cfd5066", "password");
         System.out.println(EncryptorsKey.hashString(encryptors));
     }
