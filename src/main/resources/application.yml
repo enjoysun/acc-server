@@ -42,8 +42,10 @@ ACC:
   algorithm: MD5
   ipMaxApply: 10
   forbidden: /forbidden.html
+  codeHeader: "code"
   authenticationHandler: "com.yunjia.lark.config.security.authentication.provider.UserAuthenticationProvider,com.yunjia.lark.config.security.authentication.provider.UserAndCodeAuthenticationProvider"
   authorizationVoter: ""
+  codeDigit: 4
   JWT:
     header: Authorization
     secret: $2a$10$tVwiKCrBDR68DcpaLqG4LOwGjYiG4cmB1.GhxeXvm0sdYazGDl6Xu

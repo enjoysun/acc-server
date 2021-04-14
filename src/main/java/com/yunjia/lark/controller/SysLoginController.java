@@ -3,6 +3,7 @@ package com.yunjia.lark.controller;
 import com.google.gson.reflect.TypeToken;
 import com.yunjia.lark.config.SecurityProperties;
 import com.yunjia.lark.config.security.authentication.code.CodeVerifyService;
+import com.yunjia.lark.config.security.authentication.code.VerifyService;
 import com.yunjia.lark.model.reqvo.SysUserReqVo;
 import com.yunjia.lark.model.respvo.SysUserDetailRespVo;
 import com.yunjia.lark.model.respvo.SysUserRespVo;
@@ -59,6 +60,7 @@ public class SysLoginController {
 
     @Autowired
     private JWTUtil jwtUtil;
+
 
     @GetMapping("/sign-nonce")
     public RestResult signSecret() throws UnsupportedEncodingException {
@@ -150,23 +152,9 @@ public class SysLoginController {
 
     @GetMapping("/verifyCodeApply/{userName}")
     public RestResult verifyCodeApply(@PathVariable("userName") String userName) {
-        String code = EncryptorsKey.codeCreate(4);
-        DefaultVerifyService defaultVerifyService = new DefaultVerifyService();
-        defaultVerifyService.setVerifyCodeExpire(userName, code, redisTemplate);
+        String code = EncryptorsKey.codeCreate(properties.getCodeDigit());
+        VerifyService.getDefaultVerifyServiceInstance().setVerifyCodeExpire(userName, code, redisTemplate);
         return new RestResult("200", code, "成功");
-    }
-
-    public class DefaultVerifyService implements CodeVerifyService {
-
-        @Override
-        public boolean verifyCode(HttpServletRequest request, StringRedisTemplate redisTemplate) {
-            return CodeVerifyService.super.verifyCode(request, redisTemplate);
-        }
-
-        @Override
-        public boolean setVerifyCodeExpire(String userName, String code, StringRedisTemplate redisTemplate) {
-            return CodeVerifyService.super.setVerifyCodeExpire(userName, code, redisTemplate);
-        }
     }
 
     @Data

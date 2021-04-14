@@ -10,23 +10,55 @@ import org.springframework.stereotype.Component;
  */
 @ConfigurationProperties(prefix = "acc")
 public class SecurityProperties {
+
+    /*digest摘要验证配置信息*/
     private String realm;
 
+    /*前端登录页面路由*/
     private String loginUri;
 
+    /*无权限跳转前端路由*/
     private String forbidden;
 
+    /*认证非对称加密secret密钥有效时间*/
     private long secretExpire;
 
+    /*nonce颁发非对称加密公钥接口单IP限制请求次数*/
     private long ipMaxApply;
 
+    /*nonce摘要加密算法(默认也暂定MD5)*/
     private String algorithm;
 
+    /*nonce颁发非对称加密公钥接口单IP限制时间段(目前存在时间段临界点问题，待改造为令牌桶算法进行限流)*/
     private long ipFilterExpire;
 
+    /*认证链路配置，以全限定类名组成，多个链路以逗号进行分割*/
     private String[] authenticationHandler;
 
+    /*访问控制链路配置，以全限定类名组成，多个链路以逗号进行分割*/
     private String[] authorizationVoter;
+
+    public String getCodeHeader() {
+        return codeHeader;
+    }
+
+    public void setCodeHeader(String codeHeader) {
+        this.codeHeader = codeHeader;
+    }
+
+    /*认证配置(code码验证，传输在header的code键命名)*/
+    private String codeHeader;
+
+    public int getCodeDigit() {
+        return codeDigit;
+    }
+
+    public void setCodeDigit(int codeDigit) {
+        this.codeDigit = codeDigit;
+    }
+
+    /*认证配置(code码验证，定义验证的code码长度，不超过6位)*/
+    private int codeDigit;
 
     public String getRealm() {
         return realm;

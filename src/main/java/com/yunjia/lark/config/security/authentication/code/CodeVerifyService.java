@@ -4,18 +4,15 @@ import com.yunjia.lark.util.EncryptorsKey;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.TimeUnit;
 
 
 public interface CodeVerifyService {
 
-    default boolean verifyCode(HttpServletRequest request, StringRedisTemplate redisTemplate) {
-        String key = request.getHeader("username");
-        String clientCode = request.getHeader("code");
-        if (!StringUtils.isEmpty(key) && null != redisTemplate) {
-            if (redisTemplate.hasKey(key)) {
-                String code = redisTemplate.opsForValue().get(EncryptorsKey.hashString(key));
+    default boolean verifyCode(String userName, String clientCode, StringRedisTemplate redisTemplate) {
+        if (!StringUtils.isEmpty(userName) && null != redisTemplate) {
+            if (redisTemplate.hasKey(userName)) {
+                String code = redisTemplate.opsForValue().get(EncryptorsKey.hashString(userName));
                 if (StringUtils.equals(code, clientCode))
                     return true;
             }
