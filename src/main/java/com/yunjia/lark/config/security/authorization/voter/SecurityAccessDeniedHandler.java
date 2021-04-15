@@ -1,4 +1,4 @@
-package com.yunjia.lark.config.security.authorization.exception;
+package com.yunjia.lark.config.security.authorization.voter;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

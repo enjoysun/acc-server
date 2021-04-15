@@ -27,8 +27,8 @@ import java.util.Objects;
  */
 public class UserAndCodeAuthenticationProvider implements AuthenticationProvider {
 
-//    @Autowired
-//    private SecurityProperties securityProperties;
+    @Autowired
+    private SecurityProperties securityProperties;
 
     @Autowired
     private StringRedisTemplate redisTemplate;
@@ -43,7 +43,7 @@ public class UserAndCodeAuthenticationProvider implements AuthenticationProvider
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         HttpServletRequest req = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        String code = req.getHeader("code");
+        String code = req.getHeader(securityProperties.getCodeHeader());
         String name = authentication.getName();
         String passWord = String.valueOf(authentication.getCredentials());
         if (StringUtils.isEmpty(code) || StringUtils.isEmpty(name))
